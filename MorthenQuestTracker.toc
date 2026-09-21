@@ -1,0 +1,8 @@
+## Interface: 16001
+## Title: ${title}
+## Version: ${version}
+## Author: Morthen
+## Notes: ${description}
+## Category: ${category}
+## SavedVariables: TrackerSettings
+## IconTexture: ${icon}
