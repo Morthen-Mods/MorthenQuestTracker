@@ -1,6 +1,21 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\Blizzard_SharedXML\UI.xsd">
 
+    <!--
+        Mode tab: the same LargeSideTabButtonTemplate (Blizzard_SharedXML/SharedUIPanelTemplates.xml,
+        mixin SidePanelTabButtonMixin) CharacterFrame uses for CharacterFrameModeTab1-6. Only needs
+        an icon (`iconTexture` KeyValue) and a tooltip (`tooltipText` KeyValue) per instance;
+        MQT_ModeTabButtonMixin wires up the click handler on top.
+    -->
+    <Frame name="MQT_ModeTabButtonTemplate" inherits="LargeSideTabButtonTemplate" mixin="MQT_ModeTabButtonMixin" virtual="true">
+        <KeyValues>
+            <KeyValue key="fillToInterior" value="true" type="boolean"/>
+        </KeyValues>
+        <Scripts>
+            <OnLoad method="OnLoad"/>
+        </Scripts>
+    </Frame>
+
     <Frame name="MQT_MainFrameTemplate" inherits="PortraitFrameTemplate" mixin="MQT_MainFrameMixin" virtual="true">
         <Size x="700" y="380"/>
         <Scripts>
@@ -10,10 +25,77 @@
             <Anchor point="CENTER"/>
         </Anchors>
         <Frames>
-            <Frame name="QuestScrollFrame" inherits="MQT_QuestScrollFrameTemplate">
+            <Frame name="QuestScrollFrameWorldZones" parentKey="WorldZonesFrame" inherits="MQT_QuestScrollFrameTemplate">
+                <KeyValues>
+                    <KeyValue key="categoryGroup" value="WorldZones" type="string"/>
+                </KeyValues>
                 <Anchors>
                     <Anchor point="TOPLEFT" x="12" y="-60"></Anchor>
                     <Anchor point="BOTTOMLEFT" y="6"/>
+                </Anchors>
+            </Frame>
+            <Frame name="QuestScrollFrameDungeons" parentKey="DungeonsFrame" inherits="MQT_QuestScrollFrameTemplate" hidden="true">
+                <KeyValues>
+                    <KeyValue key="categoryGroup" value="Dungeons" type="string"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="12" y="-60"></Anchor>
+                    <Anchor point="BOTTOMLEFT" y="6"/>
+                </Anchors>
+            </Frame>
+            <Frame name="QuestScrollFrameRaids" parentKey="RaidsFrame" inherits="MQT_QuestScrollFrameTemplate" hidden="true">
+                <KeyValues>
+                    <KeyValue key="categoryGroup" value="Raids" type="string"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="12" y="-60"></Anchor>
+                    <Anchor point="BOTTOMLEFT" y="6"/>
+                </Anchors>
+            </Frame>
+            <Frame name="QuestScrollFrameClassesAndProfessions" parentKey="ClassesAndProfessionsFrame" inherits="MQT_QuestScrollFrameTemplate" hidden="true">
+                <KeyValues>
+                    <KeyValue key="categoryGroup" value="ClassesAndProfessions" type="string"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="12" y="-60"></Anchor>
+                    <Anchor point="BOTTOMLEFT" y="6"/>
+                </Anchors>
+            </Frame>
+
+            <Frame parentKey="WorldZonesTab" parentArray="Tabs" inherits="MQT_ModeTabButtonTemplate" id="1">
+                <KeyValues>
+                    <KeyValue key="tooltipText" value="Worldzones" type="string"/>
+                    <KeyValue key="iconTexture" value="Interface\Icons\INV_Misc_Map_01" type="string"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" y="-30"/>
+                </Anchors>
+            </Frame>
+            <Frame parentKey="DungeonsTab" parentArray="Tabs" inherits="MQT_ModeTabButtonTemplate" id="2">
+                <KeyValues>
+                    <KeyValue key="tooltipText" value="Dungeons" type="string"/>
+                    <KeyValue key="iconTexture" value="Interface\LFGFrame\LFGIcon-Dungeon" type="string"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.WorldZonesTab" relativePoint="BOTTOMLEFT" y="-2"/>
+                </Anchors>
+            </Frame>
+            <Frame parentKey="RaidsTab" parentArray="Tabs" inherits="MQT_ModeTabButtonTemplate" id="3">
+                <KeyValues>
+                    <KeyValue key="tooltipText" value="Raids" type="string"/>
+                    <KeyValue key="iconTexture" value="Interface\LFGFrame\LFGIcon-Raid" type="string"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.DungeonsTab" relativePoint="BOTTOMLEFT" y="-2"/>
+                </Anchors>
+            </Frame>
+            <Frame parentKey="ClassesAndProfessionsTab" parentArray="Tabs" inherits="MQT_ModeTabButtonTemplate" id="4">
+                <KeyValues>
+                    <KeyValue key="tooltipText" value="Class and Professions" type="string"/>
+                    <KeyValue key="iconTexture" value="Interface\Icons\INV_Misc_Book_09" type="string"/>
+                </KeyValues>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.RaidsTab" relativePoint="BOTTOMLEFT" y="-2"/>
                 </Anchors>
             </Frame>
         </Frames>

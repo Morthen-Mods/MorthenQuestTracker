@@ -32,3 +32,21 @@ function MQT_EntryMixin:SetChecked(checked)
     self.checked = checked
     self.Check:SetTexture(checked and "Interface\\Buttons\\UI-CheckBox-Check" or nil)
 end
+
+-- MQT_ModeTabButtonTemplate inherits LargeSideTabButtonTemplate, the same
+-- generic side-tab widget CharacterFrame uses for CharacterFrameModeTab1-6
+-- (Blizzard_SharedXML/SharedUIPanelTemplates.xml, mixin SidePanelTabButtonMixin).
+-- It only needs an icon texture and a click handler; the tab art, selected
+-- highlight and tooltip (from the `tooltipText` KeyValue) are handled by the
+-- base mixin already.
+MQT_ModeTabButtonMixin = CreateFromMixins(SidePanelTabButtonMixin)
+
+function MQT_ModeTabButtonMixin:OnLoad()
+    SidePanelTabButtonMixin.OnLoad(self)
+    self.Icon:SetTexture(self.iconTexture)
+    self:SetCustomOnMouseUpHandler(function(tab, button, upInside)
+        if button == "LeftButton" and upInside then
+            self:GetParent():SelectModeTab(tab)
+        end
+    end)
+end

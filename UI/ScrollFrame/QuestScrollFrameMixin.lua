@@ -1,66 +1,77 @@
 MQT_QuestScrollFrameMixin = {}
 
--- Category submenus; each becomes a flyout button. SetGridMode with no column
--- count lets Blizzard's own AutoCalculateColumns decide (1 column below 11
--- entries, 2 above that, and so on), so short lists like Raids stay a single
--- column while long ones like Kalimdor wrap into two.
+-- Category groups behind each tab (see MQT_MainFrameMixin / MQT_ModeTabButtonMixin).
+-- Each MQT_QuestScrollFrameTemplate instance picks its group via the
+-- `categoryGroup` KeyValue set on it in TrackerTemplates.xml. A group with a
+-- single category (Dungeons/Raids) is listed flat in the dropdown; a group
+-- with several categories (WorldZones, ClassesAndProfessions) keeps them as
+-- separate flyout submenus.
 --
 -- Also doubles as the dummy quest data source: each zone gets a handful of
 -- fake quests until real per-zone quest data is wired up.
-local CATEGORIES = {
-    {
-        name = "Kalimdor",
-        zones = {
-            "Durotar", "Mulgore", "Teldrassil", "The Barrens", "Darkshore",
-            "Ashenvale", "Stonetalon Mountains", "Desolace", "Thousand Needles",
-            "Dustwallow Marsh", "Feralas", "Tanaris", "Un'Goro Crater",
-            "Azshara", "Felwood", "Winterspring", "Moonglade", "Silithus",
-            "Orgrimmar", "Thunder Bluff", "Darnassus",
+local CATEGORY_GROUPS = {
+    ClassesAndProfessions = {
+        {
+            name = "Classes",
+            zones = {
+                "Druid", "Hunter", "Mage", "Paladin", "Priest", "Rogue",
+                "Shaman", "Warlock", "Warrior",
+            },
+        },
+        {
+            name = "Professions",
+            zones = {
+                "Alchemy", "Blacksmithing", "Cooking", "Enchanting",
+                "Engineering", "First Aid", "Fishing", "Herbalism",
+                "Leatherworking", "Mining", "Skinning", "Tailoring",
+            },
         },
     },
-    {
-        name = "Eastern Kingdoms",
-        zones = {
-            "Elwynn Forest", "Westfall", "Redridge Mountains", "Duskwood",
-            "Stranglethorn Vale", "Swamp of Sorrows", "Blasted Lands",
-            "Loch Modan", "Wetlands", "Arathi Highlands", "Badlands",
-            "Hillsbrad Foothills", "The Hinterlands", "Silverpine Forest",
-            "Tirisfal Glades", "Western Plaguelands", "Eastern Plaguelands",
-            "Burning Steppes", "Searing Gorge", "Dun Morogh",
-            "Stormwind City", "Ironforge", "Undercity",
+    Dungeons = {
+        {
+            name = "Dungeon",
+            zones = {
+                "Blackfathom Deeps", "Blackrock Depths", "Dire Maul",
+                "Gnomeregan", "Lower Blackrock Spire", "Maraudon",
+                "Ragefire Chasm", "Razorfen Downs", "Razorfen Kraul",
+                "Scarlet Monastery", "Shadowfang Keep", "Sunken Temple",
+                "The Deadmines", "The Stockade", "Uldaman",
+                "Upper Blackrock Spire", "Wailing Caverns", "Zul'Farrak",
+            },
         },
     },
-    {
-        name = "Dungeon",
-        zones = {
-            "Ragefire Chasm", "Wailing Caverns", "The Deadmines",
-            "Shadowfang Keep", "Blackfathom Deeps", "The Stockade",
-            "Gnomeregan", "Razorfen Kraul", "Scarlet Monastery",
-            "Razorfen Downs", "Uldaman", "Zul'Farrak", "Maraudon",
-            "Sunken Temple", "Blackrock Depths", "Lower Blackrock Spire",
-            "Upper Blackrock Spire", "Dire Maul",
+    Raids = {
+        {
+            name = "Raids",
+            zones = {
+                "Blackwing Lair", "Molten Core", "Naxxramas", "Onyxia's Lair",
+                "Ruins of Ahn'Qiraj", "Temple of Ahn'Qiraj", "Zul'Gurub",
+            },
         },
     },
-    {
-        name = "Raids",
-        zones = {
-            "Molten Core", "Onyxia's Lair", "Blackwing Lair", "Zul'Gurub",
-            "Ruins of Ahn'Qiraj", "Temple of Ahn'Qiraj", "Naxxramas",
+    WorldZones = {
+        {
+            name = "Eastern Kingdoms",
+            zones = {
+                "Arathi Highlands", "Badlands", "Blasted Lands", "Burning Steppes",
+                "Dun Morogh", "Duskwood", "Eastern Plaguelands", "Elwynn Forest",
+                "Hillsbrad Foothills", "Ironforge", "Loch Modan",
+                "Redridge Mountains", "Searing Gorge", "Silverpine Forest",
+                "Stormwind City", "Stranglethorn Vale", "Swamp of Sorrows",
+                "The Hinterlands", "Tirisfal Glades", "Undercity",
+                "Western Plaguelands", "Westfall", "Wetlands",
+            },
         },
-    },
-    {
-        name = "Classes",
-        zones = {
-            "Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman",
-            "Mage", "Warlock", "Druid",
-        },
-    },
-    {
-        name = "Professions",
-        zones = {
-            "Alchemy", "Blacksmithing", "Enchanting", "Engineering",
-            "Leatherworking", "Tailoring", "Mining", "Herbalism", "Skinning",
-            "Cooking", "First Aid", "Fishing",
+        {
+            name = "Kalimdor",
+            zones = {
+                "Ashenvale", "Azshara", "Darkshore", "Darnassus", "Desolace",
+                "Durotar", "Dustwallow Marsh", "Felwood", "Feralas",
+                "Moonglade", "Mulgore", "Orgrimmar", "Silithus",
+                "Stonetalon Mountains", "Tanaris", "Teldrassil", "The Barrens",
+                "Thousand Needles", "Thunder Bluff", "Un'Goro Crater",
+                "Winterspring",
+            },
         },
     },
 }
@@ -86,7 +97,9 @@ function MQT_QuestScrollFrameMixin:OnLoad()
     end)
     ScrollUtil.InitScrollBoxListWithScrollBar(self.ScrollBox, self.ScrollBar, view)
 
-    -- nil/nil means "no filter" / show every category and zone.
+    self.categories = CATEGORY_GROUPS[self.categoryGroup] or {}
+
+    -- nil/nil means "no filter" / show every category and zone in this tab.
     self.selectedCategory = nil
     self.selectedZone = nil
     self:RefreshDataProvider()
@@ -97,7 +110,7 @@ end
 function MQT_QuestScrollFrameMixin:RefreshDataProvider()
     local dataProvider = CreateTreeDataProvider()
     local zoneCount = 0
-    for _, category in ipairs(CATEGORIES) do
+    for _, category in ipairs(self.categories) do
         if self.selectedCategory == nil or self.selectedCategory == category.name then
             for _, zoneName in ipairs(category.zones) do
                 if self.selectedZone == nil or self.selectedZone == zoneName then
@@ -156,15 +169,28 @@ function MQT_QuestScrollFrameMixin:SetupGroupFilterDropdown()
         rootDescription:CreateButton(EVERYTHING_TEXT, SelectAll)
         rootDescription:CreateDivider()
 
-        for _, category in ipairs(CATEGORIES) do
-            local submenu = rootDescription:CreateButton(category.name, function()
-                SelectCategory(category.name)
-            end)
-            submenu:SetGridMode(MenuConstants.VerticalGridDirection)
-            for _, zoneName in ipairs(category.zones) do
-                submenu:CreateButton(zoneName, function()
+        if #self.categories == 1 then
+            -- Only one category in this tab (Dungeons/Raids); nesting it
+            -- behind its own submenu would just add a pointless extra click,
+            -- so list its zones directly at the root instead. SetGridMode
+            -- isn't used here since it would also grid the Everything button
+            -- and divider above (grid mode applies to the whole description).
+            for _, zoneName in ipairs(self.categories[1].zones) do
+                rootDescription:CreateButton(zoneName, function()
                     SelectZone(zoneName)
                 end)
+            end
+        else
+            for _, category in ipairs(self.categories) do
+                local submenu = rootDescription:CreateButton(category.name, function()
+                    SelectCategory(category.name)
+                end)
+                submenu:SetGridMode(MenuConstants.VerticalGridDirection)
+                for _, zoneName in ipairs(category.zones) do
+                    submenu:CreateButton(zoneName, function()
+                        SelectZone(zoneName)
+                    end)
+                end
             end
         end
     end)
