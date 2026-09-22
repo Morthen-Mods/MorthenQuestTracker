@@ -1,0 +1,87 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\Blizzard_SharedXML\UI.xsd">
+
+    <Frame name="MQT_MainFrameTemplate" inherits="PortraitFrameTemplate" mixin="MQT_MainFrameMixin" virtual="true">
+        <Size x="700" y="380"/>
+        <Scripts>
+            <OnLoad method="OnLoad"/>
+        </Scripts>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Frames>
+            <Frame name="QuestScrollFrame" inherits="MQT_QuestScrollFrameTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="12" y="-60"></Anchor>
+                    <Anchor point="BOTTOMLEFT" y="6"/>
+                </Anchors>
+            </Frame>
+        </Frames>
+    </Frame>
+
+    <Frame name="MQT_QuestScrollFrameTemplate" inherits="InsetFrameTemplate" mixin="MQT_QuestScrollFrameMixin" virtual="true">
+        <Size x="240"/>
+
+        <Scripts>
+            <OnLoad method="OnLoad"/>
+        </Scripts>
+
+        <Frames>
+            <DropdownButton parentKey="Dropdown" inherits="WowStyle1DropdownTemplate">
+                <Size y="24"/>
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT" x="4" y="3"/>
+                    <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-4"/>
+                </Anchors>
+            </DropdownButton>
+            <Frame parentKey="ScrollBox" inherits="WowScrollBoxList">
+                <Anchors>
+                    <Anchor point="TOPLEFT"  x="6" y="-6"/>
+                    <Anchor point="TOPRIGHT" x="-24"/>
+                    <Anchor point="BOTTOM"   y="6"/>
+                </Anchors>
+            </Frame>
+            <EventFrame parentKey="ScrollBar" inherits="MinimalScrollBar">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.ScrollBox" relativePoint="TOPRIGHT" x="4" y="-3"/>
+                    <Anchor point="BOTTOMLEFT" relativeKey="$parent.ScrollBox" relativePoint="BOTTOMRIGHT" x="4" y="2"/>
+                </Anchors>
+            </EventFrame>
+        </Frames>
+    </Frame>
+
+    <!--
+        Header bar: inherits Blizzard's own collapsible list header instead of re-creating its
+        atlas/CollapseButton wiring (Blizzard_SharedXML/ListTemplates.xml, AllowLoad: Both -> also
+        loaded on Classic). Gives us the CollapseButton child, title region and hover highlight for
+        free; MQT_HeaderMixin only adds the click-to-toggle behaviour on top.
+    -->
+    <Button name="MQT_HeaderTemplate" inherits="ListHeaderVisualTemplate" mixin="MQT_HeaderMixin" virtual="true">
+        <Size x="190" y="30"/>
+        <Scripts>
+            <OnLoad method="OnLoad"/>
+            <OnClick method="OnClick"/>
+        </Scripts>
+    </Button>
+
+    <Frame name="MQT_EntryTemplate" mixin="MQT_EntryMixin" virtual="true">
+        <Size y="25"/>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString parentKey="Text" inherits="GameFontHighlightSmall" justifyH="LEFT">
+                    <Anchors>
+                        <Anchor point="LEFT" x="9" y="0"/>
+                        <Anchor point="RIGHT" x="-20" y="0"/>
+                    </Anchors>
+                    <Color r="0.95" g="0.78" b="0.3"/>
+                </FontString>
+                <Texture parentKey="Check">
+                    <Size x="14" y="14"/>
+                    <Anchors>
+                        <Anchor point="RIGHT" x="-4" y="0"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Frame>
+</Ui>

@@ -69,10 +69,10 @@ echo "Archive name: ${title}-${version}"
 zip_file="$destination_folder/${title}-${version}.zip"
 echo "ZIP archive name: '$zip_file'"
 
-# Collect source files, excluding the build folder itself
+# Collect source files, excluding the build folder and IDE metadata
 mapfile -t source_files < <(find . -type f \
-    \( -name '*.lua' -o -name '*.toc' -o -name '*.tga' -o -name '*.png' \) \
-    -not -path './build/*')
+    \( -name '*.lua' -o -name '*.toc' -o -name '*.tga' -o -name '*.png' -o -name '*.xml' \) \
+    -not -path './build/*' -not -path './.idea/*')
 
 # Reset the build folder
 rm -rf "$destination_folder"

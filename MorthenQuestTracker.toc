@@ -6,3 +6,13 @@
 ## Category: ${category}
 ## SavedVariables: TrackerSettings
 ## IconTexture: ${icon}
+
+Data/DataHandler.lua
+
+# Mixins
+UI/ScrollFrame/QuestScrollFrameMixin.lua
+UI/TrackerTemplateMixins.lua
+
+UI/TrackerTemplates.xml
+
+UI/MainFrame.lua
