@@ -7,12 +7,19 @@
 ## SavedVariables: TrackerSettings
 ## IconTexture: ${icon}
 
+Data/MQT_Settings.lua
+Data/ZoneData.lua
 Data/DataHandler.lua
 
+Locale/enUS.lua
+
 # Mixins
-UI/ScrollFrame/QuestScrollFrameMixin.lua
-UI/TrackerTemplateMixins.lua
+UI/MQT_EntryMixin.lua
+UI/MQT_HeaderMixin.lua
+UI/MQT_MainFrameMixin.lua
+UI/MQT_QuestScrollFrameMixin.lua
+UI/MQT_TabButtonMixin.lua
 
 UI/TrackerTemplates.xml
 
-UI/MainFrame.lua
+Core.lua

@@ -1,26 +1,45 @@
 local addonName, MQT = ...
 
--- Placeholder/test data for the tracker display. Each group is rendered as
--- its own collapsible block; each entry is a single line with a checked
--- status. Real quest/waypoint data can replace this table later.
-MQT.Data = {
-    {
-        name = "Zephras Isle",
-        entries = {
-            { text = "[9] A Firm Response", checked = true },
-            { text = "[9] Unwelcome Spirits", checked = true },
-            { text = "[11] Aid For The Refugees", checked = true },
-            { text = "[11] Feathers for Binding", checked = true },
-            { text = "[11] The Fate of a Loved One", checked = true },
-            { text = "[11] Unwanted and Unworthy", checked = true },
-            { text = "[12] Tears of the Lady", checked = true },
-        },
-    },
-    {
-        name = "Shaman",
-        entries = {
-            { text = "[10] Totemic Restoration", checked = false },
-            { text = "[10] Spirits of the Land", checked = false },
-        },
-    },
-}
+local DataHandler = {}
+
+local f = CreateFrame("Frame")
+f:RegisterEvent("ADDON_LOADED")
+
+f:SetScript("OnEvent", function(_, event, name)
+    if event == "ADDON_LOADED" and name == addonName then DataHandler.OnLoad() end
+end)
+
+local function DeepCopy(source)
+    local copy = {}
+    for key, value in pairs(source) do
+        if type(value) == "table" then
+            copy[key] = DeepCopy(value)
+        else
+            copy[key] = value
+        end
+    end
+    return copy
+end
+
+local function DeepMerge(target, source)
+    for key, value in pairs(source) do
+        if type(value) == "table" and type(target[key]) == "table" then
+            DeepMerge(target[key], value)
+        else
+            target[key] = value
+        end
+    end
+end
+
+function DataHandler.OnLoad()
+    for key, defaults in pairs(MQT.Settings.default) do
+        MQT.Settings[key] = DeepCopy(defaults)
+
+        local saved = _G[key]
+        if saved ~= nil then
+            DeepMerge(MQT.Settings[key], saved)
+        end
+
+        _G[key] = MQT.Settings[key]
+    end
+end

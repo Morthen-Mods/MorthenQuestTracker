@@ -1,3 +1,5 @@
+local _, MQT = ...
+
 MQT_QuestScrollFrameMixin = {}
 
 -- Category groups behind each tab (see MQT_MainFrameMixin / MQT_ModeTabButtonMixin).

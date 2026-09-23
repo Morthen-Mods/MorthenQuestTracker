@@ -1,0 +1,3 @@
+local addonName, MQT = ...
+
+local f = CreateFrame("Frame", addonName .. "MainFrame", UIParent, "MQT_MainFrameTemplate")
