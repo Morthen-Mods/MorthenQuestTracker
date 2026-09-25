@@ -9,6 +9,8 @@
 
 Data/MQT_Settings.lua
 Data/ZoneData.lua
+Data/QuestData.lua
+Data/QuestList.lua
 Data/DataHandler.lua
 
 Locale/enUS.lua
